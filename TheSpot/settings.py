@@ -24,7 +24,6 @@ SECRET_KEY = '-y=wv6cf6g8a5n3a_x^c!l0p*wv!9@i)1rm$62ns+&7xm(2jh_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-TIME_ZONE = 'Europe/Warsaw'
 
 ALLOWED_HOSTS = []
 
@@ -107,7 +106,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Warsaw'
 
 USE_I18N = True
 

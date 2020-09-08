@@ -12,13 +12,25 @@ class PostDetails(generic.DetailView):
     model = Post
     template_name = 'blog/post_details.html'
 
-def post_detail(request, slug):
-    template_name = 'blog/post_detail.html'
-    post = get_object_or_404(Post, slug=slug)
-    comments = post.comments.filter(active=True)
-    new_comment = None
-    # Comment posted
-    if request.method == 'POST':
+    def get(self, request, slug):
+        template_name = 'blog/post_details.html'
+        post = get_object_or_404(Post, slug=slug)
+        comments = post.comments.filter(active=True)
+        new_comment = None
+            
+        comment_form = CommentForm()
+
+        return render(request, template_name, { 'post': post,
+                                                'comments': comments,
+                                                'new_comment': new_comment,
+                                                'comment_form': comment_form})
+
+    def post(self, request, slug):
+        template_name = 'blog/post_details.html'
+        post = get_object_or_404(Post, slug=slug)
+        comments = post.comments.filter(active=True)
+        new_comment = None
+        # Comment posted
         comment_form = CommentForm(data=request.POST)
         if comment_form.is_valid():
 
@@ -28,10 +40,8 @@ def post_detail(request, slug):
             new_comment.post = post
             # Save the comment to the database
             new_comment.save()
-    else:
-        comment_form = CommentForm()
 
-    return render(request, template_name, {'post': post,
-                                           'comments': comments,
-                                           'new_comment': new_comment,
-                                           'comment_form': comment_form})
+        return render(request, template_name, {'post': post,
+                                            'comments': comments,
+                                            'new_comment': new_comment,
+                                            'comment_form': comment_form})
