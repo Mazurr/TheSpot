@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from ckeditor.fields import RichTextField
+from django.urls import reverse
 
 STATUS = (
     (0, "Draft"),
@@ -13,7 +15,7 @@ class Post(models.Model):
     slug = models.SlugField(max_length = 100, unique = True)
     author = models.ForeignKey(User, on_delete = models.CASCADE, related_name = 'blog_posts')
     update_date = models.DateTimeField(auto_now = True)
-    content = models.TextField()
+    content = RichTextField(blank=True, null=True)
     create_date = models.DateTimeField(auto_now_add = True)
     status = models.IntegerField(choices = STATUS, default = 0)
 
@@ -22,6 +24,9 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse('blog:post_details', args=[str(self.slug)])
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete = models.CASCADE, related_name = 'comments')

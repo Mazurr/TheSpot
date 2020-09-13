@@ -16,7 +16,7 @@ from .models import Post
 from .forms import CommentForm, SignUpForm, PasswordResetForm, PasswordChangeForm
 
 class PostView(generic.ListView):
-    queryset = Post.objects.filter(status=1).order_by('create_date')
+    queryset = Post.objects.filter(status=1).order_by('-create_date')
     template_name = 'blog/index.html'
     paginate_by = 5
 
@@ -58,6 +58,21 @@ class PostDetails(generic.DetailView):
                                                 'comments': comments,
                                                 'new_comment': new_comment,
                                                 'comment_form': comment_form})
+
+class AddPost(generic.CreateView):
+    model = Post
+    template_name = 'blog/add_post.html'
+    fields = ('title', 'slug', 'author','content', 'status')
+
+class EditPost(generic.UpdateView):
+    model = Post
+    template_name = 'blog/edit_post.html'
+    fields = ('title', 'slug','content', 'status')
+
+class DeletePost(generic.DeleteView):
+    model = Post
+    template_name = 'blog/delete_post.html'
+    success_url = reverse_lazy('blog:home')
 
 class SignUp(generic.CreateView):
     form_class = SignUpForm
@@ -151,4 +166,3 @@ class PasswordChange(generic.View):
         else:
             return redirect('blog:home')
         return render(request, self.template_name, {'pass_change_form': pass_change_form})  
-

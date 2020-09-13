@@ -1,6 +1,6 @@
 {% extends 'blog/base.html' %}
 
-{% block title %}Sign Page{% endblock title %}
+{% block title %}Edit Post{% endblock title %}
 
 {% block content %}
 <header class="masthead">
@@ -9,7 +9,7 @@
         <div class="row">
             <div class=" col-md-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h3 class="site-heading my-2 mt-3 text-white">Log In</h3>
+                    <h3 class="site-heading my-2 mt-3 text-white">Edit Post {{user.username}}</h3>
                 </div>
             </div>
         </div>
@@ -20,8 +20,9 @@
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
+                {{ form.media }}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-primary  btn-lg">Login</button>
+                <button type="submit" class="btn btn-primary  btn-lg">Edit</button>
             </form>
         </div>
     </div>
