@@ -26,7 +26,7 @@
             border-color: #dc281e;
         }
         .masthead {
-            background: #3398E1;
+            background: #448f3b;
             height: auto;
             padding-bottom: 15px;
             box-shadow: 0 16px 48px #E3E7EB;
@@ -44,15 +44,21 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
+                        {% if user.is_authenticated %}
                         <li class="nav-item text-black">
-                            <a class="nav-link text-black font-weight-bold" href="#">About</a>
+                            <a class="nav-link text-black font-weight-bold" href="{% url 'blog:logout' %}">Logout</a>
                         </li>
                         <li class="nav-item text-black">
-                            <a class="nav-link text-black font-weight-bold" href="#">Policy</a>
+                            <a class="nav-link text-black font-weight-bold" href="{% url 'blog:account' %}">Account</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item text-black">
+                            <a class="nav-link text-black font-weight-bold" href="{% url 'blog:signup' %}">Sign Up</a>
                         </li>
                         <li class="nav-item text-black">
-                            <a class="nav-link text-black font-weight-bold" href="#">Contact</a>
+                            <a class="nav-link text-black font-weight-bold" href="{% url 'blog:login' %}">Login</a>
                         </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

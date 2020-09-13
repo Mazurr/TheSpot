@@ -11,7 +11,7 @@ class CommentAdmin(admin.ModelAdmin):
         queryset.update(active = True)
 
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'status', 'create_date', 'update_date')
+    list_display = ('title', 'slug','status', 'create_date', 'update_date')
     list_filter = ("create_date",)
     search_fields = ['title', 'content']
     prepopulated_fields = {'slug': ('title',)}

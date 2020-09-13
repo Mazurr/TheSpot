@@ -1,0 +1,33 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Sign Page{% endblock title %}
+
+{% block content %}
+<header class="masthead">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h3 class="site-heading my-2 mt-3 text-white">Sign Page</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+            
+    <div class="col-md-8 card mb-4  mt-3 ">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success  btn-lg">Submit</button>
+            </form>
+            {% if messages %}
+                {% for message in messages %}
+                    {{message}};
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

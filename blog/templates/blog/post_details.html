@@ -9,13 +9,28 @@
         <p class="card-text ">{{ post.content | safe }}</p>
       </div>
     </div>
-    {% block sidebar %} {% include 'blog/sidebar.html' %} {% endblock sidebar %}
-
+    {% if user.is_authenticated %}
+        <div class="col-md-8 card mb-4  mt-3 ">
+          <div class="card-body">
+            {% if new_comment %}
+            <div class="alert alert-success" role="alert">
+              Your comment is awaiting moderation
+            </div>
+            {% else %}
+            <h3>Comment</h3>
+            <form method="post" style="margin-top: 1.3em;">
+              {{ comment_form.as_p }}
+              {% csrf_token %}
+              <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
+            </form>
+            {% endif %}
+          </div>
+        </div>
+     {% endif %}
     <div class="col-md-8 card mb-4  mt-3 ">
       <div class="card-body">
         <!-- comments -->
         <h2>{{ comments.count}} Comments</h2>
-
         {% for comment in comments %}
         <div class="comments" style="padding: 10px;">
           <p class="font-weight-bold">
@@ -27,22 +42,6 @@
           {{ comment.contents | linebreaks }}
         </div>
         {% endfor %}
-      </div>
-    </div>
-    <div class="col-md-8 card mb-4  mt-3 ">
-      <div class="card-body">
-        {% if new_comment %}
-        <div class="alert alert-success" role="alert">
-          Your comment is awaiting moderation
-        </div>
-        {% else %}
-        <h3>Leave a comment</h3>
-        <form method="post" style="margin-top: 1.3em;">
-          {{ comment_form.as_p }}
-          {% csrf_token %}
-          <button type="submit" class="btn btn-primary  btn-lg">Submit</button>
-        </form>
-        {% endif %}
       </div>
     </div>
   </div>
