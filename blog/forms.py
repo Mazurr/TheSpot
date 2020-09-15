@@ -144,3 +144,11 @@ class LoginForm(forms.Form):
     password1 = forms.CharField(label='Enter password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     def __init__(self, request, *args, **kwargs):
        super(LoginForm, self).__init__(*args, **kwargs)
+
+def kurwa(func):
+    print(func)
+
+def karakan():
+    return "karakan"
+
+kurwa(karakan)
