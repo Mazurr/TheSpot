@@ -22,12 +22,7 @@
         <div class="row">
             <div class=" col-md-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    {% if user.is_authenticated %}
-                        <h3 class=" site-heading my-4 mt-3 text-white"> Welcome to The Spot, {{user.username}} </h3>
-                    {% else %}
-                        <h3 class=" site-heading my-4 mt-3 text-white"> Welcome to The Spot </h3>
-                    {% endif %}
-                    <p class="text-light">We Love Django As much as you do..! &nbsp
+                        <h3 class=" site-heading my-4 mt-3 text-white">Category: {{ category }} </h3>
                     </p>
                 </div>
             </div>
@@ -36,8 +31,11 @@
 </header>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-10 mt-4 left">
-            {% for post in post_list %}
+        <!-- Blog Entries Column -->
+        {% if category_posts %}
+        <div class="col-md-8 mt-3 left">
+        
+            {% for post in category_posts %}
             <div class="card mb-5">
                 <div class="card-header inline">
                 <h2 class="d-inline float-left">{{ post.title }}</h2><p class="text-muted h6 d-inline float-right">Likes: {{ post.likes.count }}</p>
@@ -47,7 +45,7 @@
                     {% if user.is_authenticated %}
                         {% if user.username == post.author.username %}
                         | <a href="{% url 'blog:edit_post' post.slug %}">Edit</a> | <a href="{% url 'blog:delete_post' post.slug %}">Delete</a>
-                    {% endif %}
+                        {% endif %}
                     {% endif %}
                     </p>
                     <p class="card-text">{{post.content|slice:":200"|safe }}...</p>
@@ -66,7 +64,11 @@
             {% endif %}
                 </ul>
                 </nav>
+        
         </div>
+        {% endif %}
+        {% else %}
+            <p>This category doesn't exist</p>
         {% endif %}
         </div>
     </div>

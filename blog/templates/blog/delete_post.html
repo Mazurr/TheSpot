@@ -15,7 +15,8 @@
         </div>
     </div>
 </header>
-            
+{% if user.is_authenticated %}
+{% if user.username == post.author.username %}            
     <div class="col-md-8 card mb-4  mt-3 ">
         <div class="card-body">
             <form method="post">
@@ -26,4 +27,10 @@
             </form>
         </div>
     </div>
+{% else %}
+    This is not your post!
+{% endif %}
+{% else %}
+You are not logged in!
+{% endif %}
 {% endblock content %}

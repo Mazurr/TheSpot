@@ -9,21 +9,51 @@
         <div class="row">
             <div class=" col-md-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h3 class="site-heading my-2 mt-3 text-white">Account Settings</h3>
+                    <h3 class="site-heading my-2 mt-3 text-white">{{user.username}} Account Settings</h3>
                 </div>
             </div>
         </div>
     </div>
 </header>
-            
+<div class="row justify-content-center">
     <div class="col-md-8 card mb-4  mt-3 ">
+        <div class="card-header">
+            <h2 class="d-inline">Change your email:</h2>
+        </div>
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
+                {{ email_change_form.as_p }}
+                <button type="submit" name="email_change" class="btn btn-outline-success  btn-lg float-right">Change Email</button>
+            </form>
+            <br>
+        </div>
+    </div>    
+    <div class="col-md-8 card mb-4  mt-3 ">
+        <div class="card-header">
+            <h2 class="d-inline">Change your password:</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" >
+                {% csrf_token %}
                 {{ pass_change_form.as_p }}
-                <button type="submit" class="btn btn-primary  btn-lg">Change Password</button>
+                <button type="submit" name="pass_change" class="btn btn-outline-success  btn-lg float-right">Change Password</button>
             </form>
             <br>
         </div>
     </div>
+    <div class="col-md-8 card mb-4  mt-3 ">
+        <div class="card-header">
+            <h2 class="d-inline">Delete your account:</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" >
+                {% csrf_token %}
+                {{ delete_user_form.as_p }}
+                <button type="submit" name="delete_user" class="btn btn-outline-danger  btn-lg float-right">Delete User</button>
+            </form>
+            <br>
+        </div>
+    </div>
+</div>
 {% endblock content %}

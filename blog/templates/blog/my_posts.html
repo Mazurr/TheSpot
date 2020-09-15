@@ -1,5 +1,7 @@
 {% extends "blog/base.html" %} 
+
 {% block content %}
+{% if user.is_authenticated %}
 <style>
     body {
         font-family: "Roboto", sans-serif;
@@ -15,20 +17,14 @@
         box-shadow: 0 16px 48px #E3E7EB;
     }
 </style>
-
 <header class="masthead">
     <div class="overlay"></div>
     <div class="container">
         <div class="row">
             <div class=" col-md-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    {% if user.is_authenticated %}
-                        <h3 class=" site-heading my-4 mt-3 text-white"> Welcome to The Spot, {{user.username}} </h3>
-                    {% else %}
-                        <h3 class=" site-heading my-4 mt-3 text-white"> Welcome to The Spot </h3>
-                    {% endif %}
-                    <p class="text-light">We Love Django As much as you do..! &nbsp
-                    </p>
+                    <h3 class=" site-heading my-4 mt-3 text-white">These are your posts, {{user.username}} </h3>
+
                 </div>
             </div>
         </div>
@@ -71,4 +67,7 @@
         </div>
     </div>
 </div>
-{%endblock%}
+{% else %}
+    <h2 style="text-align: center; margin: 100px;">You must to login!</h2>
+{% endif %}
+{% endblock %}

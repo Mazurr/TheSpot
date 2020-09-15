@@ -15,15 +15,20 @@
         </div>
     </div>
 </header>
-            
-    <div class="col-md-8 card mb-4  mt-3 ">
+{% if user.is_authenticated %} 
+<div class="row justify-content-center">         
+    <div class="col-md-7.5 card mb-4  mt-3 ">
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
                 {{ form.media }}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-primary  btn-lg">Post</button>
+                <button type="submit" class="btn btn-success  btn-lg btn-block">Post</button>
             </form>
         </div>
     </div>
+</div>
+{% else %}
+You are not logged in!
+{% endif %}
 {% endblock content %}

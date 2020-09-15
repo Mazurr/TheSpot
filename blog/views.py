@@ -1,6 +1,6 @@
 from django.views import generic
 from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth import login
@@ -11,14 +11,29 @@ from django.utils.http import urlsafe_base64_encode
 from django.template.loader import render_to_string
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import default_token_generator
+from django.http import HttpResponseRedirect
 
-from .models import Post
-from .forms import CommentForm, SignUpForm, PasswordResetForm, PasswordChangeForm
+from .models import Post, Category
+from .forms import CommentForm, SignUpForm, PasswordResetForm, PasswordChangeForm, PostForm, EditPostForm, EmailChangeForm, DeleteUserForm
 
+############################################ Posts Managment ########################################################################
+
+# Index Page
+ 
 class PostView(generic.ListView):
     queryset = Post.objects.filter(status=1).order_by('-create_date')
     template_name = 'blog/index.html'
     paginate_by = 5
+
+class MyPostsView(generic.ListView):
+    template_name = 'blog/my_posts.html'
+    paginate_by = 5
+    queryset = Post.objects
+    def get(self, request, *args, **kwargs):
+        self.queryset = Post.objects.filter(author=request.user.pk).order_by('-create_date')
+        return super(MyPostsView, self).get(request, *args, **kwargs)
+    
+# Post Details
 
 class PostDetails(generic.DetailView):
     model = Post
@@ -61,18 +76,41 @@ class PostDetails(generic.DetailView):
 
 class AddPost(generic.CreateView):
     model = Post
+    form_class = PostForm
     template_name = 'blog/add_post.html'
-    fields = ('title', 'slug', 'author','content', 'status')
+
+    def get(self, request):
+        add_post_form = self.form_class(request=request)
+        return render(request, self.template_name, {'form': add_post_form})
+
+    def post(self, request):
+        add_post_form = self.form_class(request=request, data=request.POST)
+        if add_post_form.is_valid():
+            add_post_form.save()
+            return redirect('blog:home')
+        return render(request, self.template_name, {'form': add_post_form})
 
 class EditPost(generic.UpdateView):
     model = Post
+    form_class = EditPostForm
     template_name = 'blog/edit_post.html'
-    fields = ('title', 'slug','content', 'status')
+    
 
 class DeletePost(generic.DeleteView):
     model = Post
     template_name = 'blog/delete_post.html'
     success_url = reverse_lazy('blog:home')
+
+def Categories(request, category):
+    category_posts = Post.objects.filter(category=category.replace('-', ' '))
+    return render(request, 'blog/categories.html', {'category': category.title().replace('-', ' '), 'category_posts':category_posts})
+
+def Like(request, slug):
+    post = get_object_or_404(Post, slug=request.POST.get('post_id'))
+    post.likes.add(request.user)
+    return HttpResponseRedirect(reverse('blog:post_details', args=[str(slug)]))
+
+############################################ Users Managment ########################################################################
 
 class SignUp(generic.CreateView):
     form_class = SignUpForm
@@ -114,11 +152,11 @@ class ActivateAccount(generic.View):
             user.profile.email_confirmed = True
             user.save()
             login(request, user)
-            messages.success(request, ('Your account have been confirmed.'))
             return redirect('blog:home')
         else:
-            messages.warning(request, ('The confirmation link was invalid, possibly because it has already been used.'))
             return redirect('blog:home')
+
+# Reset password via e-mail
 
 class ResetPassword(generic.View):
     template_name = 'registration/password_reset.html'
@@ -146,23 +184,50 @@ class ResetPassword(generic.View):
 	    password_reset_form = PasswordResetForm()
 	    return render(request, self.template_name, {"password_reset_form":password_reset_form})
 
-class PasswordChange(generic.View):
+# Change password, email and delete user
+
+class AccountSettings(generic.View):
     template_name = 'blog/account.html'
     
     def get(self, request):
         if request.user.is_authenticated:
             pass_change_form = PasswordChangeForm(request)
-            return render(request, self.template_name, {'pass_change_form': pass_change_form})  
+            email_change_form = EmailChangeForm(request)
+            delete_user_form = DeleteUserForm(request)
+            return render(request, self.template_name, {'pass_change_form': pass_change_form, 'email_change_form': email_change_form, 'delete_user_form': delete_user_form,})  
         else:
             return redirect('blog:home')
 
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            user = User.objects.get(username = request.user.username)
-            pass_change_form = PasswordChangeForm(request=request, data=request.POST)
-            if pass_change_form.is_valid():
-                user.set_password(pass_change_form.cleaned_data['new_pass2'])
-                user.save()
+            ### Change user password ###
+            if 'pass_change' in request.POST:
+                user = User.objects.get(username = request.user.username)
+                pass_change_form = PasswordChangeForm(request=request, data=request.POST)
+                if pass_change_form.is_valid():
+                    user.set_password(pass_change_form.cleaned_data['new_pass2'])
+                    user.save()
+                    return redirect('blog:login')
+            else:
+                pass_change_form = PasswordChangeForm(request)
+            ### Change user email ###
+            if 'email_change' in request.POST:
+                user = User.objects.get(username = request.user.username)
+                email_change_form = EmailChangeForm(request=request, data=request.POST)
+                if email_change_form.is_valid():
+                    user.email = email_change_form.cleaned_data['new_email']
+                    user.save()
+            else:
+                email_change_form = EmailChangeForm(request)
+            ### Delete user ###
+            if 'delete_user' in request.POST:
+                delete_user_form = DeleteUserForm(request=request, data=request.POST)
+                if delete_user_form.is_valid():
+                    user = User.objects.get(username=request.user.username)
+                    user.delete()
+                    return redirect('blog:home')
+            else:
+                delete_user_form = DeleteUserForm(request)
         else:
             return redirect('blog:home')
-        return render(request, self.template_name, {'pass_change_form': pass_change_form})  
+        return render(request, self.template_name, {'pass_change_form': pass_change_form, 'email_change_form': email_change_form, 'delete_user_form': delete_user_form,})

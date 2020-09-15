@@ -9,19 +9,19 @@
         <div class="row">
             <div class=" col-md-8 col-md-10 mx-auto">
                 <div class="site-heading">
-                    <h3 class="site-heading my-2 mt-3 text-white">Sign Page</h3>
+                    <h3 class="site-heading my-2 mt-3 text-white text-center">Sign Up Page</h3>
                 </div>
             </div>
         </div>
     </div>
 </header>
-            
-    <div class="col-md-8 card mb-4  mt-3 ">
+<div class="row justify-content-center">          
+    <div class="col-md-4 card mb-4  mt-3 ">
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-success  btn-lg">Submit</button>
+                <button type="submit" class="btn btn-success btn-lg btn-block">Sign Up!</button>
             </form>
             {% if messages %}
                 {% for message in messages %}
@@ -30,4 +30,5 @@
             {% endif %}
         </div>
     </div>
+</div>
 {% endblock content %}

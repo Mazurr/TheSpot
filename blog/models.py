@@ -17,6 +17,8 @@ class Post(models.Model):
     update_date = models.DateTimeField(auto_now = True)
     content = RichTextField(blank=True, null=True)
     create_date = models.DateTimeField(auto_now_add = True)
+    category = models.CharField(max_length = 100, default='uncategorized')
+    likes = models.ManyToManyField(User, related_name="like_post")
     status = models.IntegerField(choices = STATUS, default = 0)
 
     class Meta:
@@ -27,6 +29,15 @@ class Post(models.Model):
     
     def get_absolute_url(self):
         return reverse('blog:post_details', args=[str(self.slug)])
+
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    
+    def __str__(self):
+        return self.name
+    
+    def get_absolute_url(self):
+        return reverse('blog:home')
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete = models.CASCADE, related_name = 'comments')
