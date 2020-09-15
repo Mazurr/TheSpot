@@ -1,0 +1,36 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Delete Post{% endblock title %}
+
+{% block content %}
+<header class="masthead">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class=" col-md-8 col-md-10 mx-auto">
+                <div class="site-heading">
+                    <h3 class="site-heading my-2 mt-3 text-white">Delete Post {{post.title}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+{% if user.is_authenticated %}
+{% if user.username == post.author.username %}            
+    <div class="col-md-8 card mb-4  mt-3 ">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                <p>Are you shure about that?</p>
+                <br>
+                <button type="submit" class="btn btn-danger  btn-lg">Delete Post</button>
+            </form>
+        </div>
+    </div>
+{% else %}
+    This is not your post!
+{% endif %}
+{% else %}
+You are not logged in!
+{% endif %}
+{% endblock content %}
